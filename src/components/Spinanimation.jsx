@@ -1,4 +1,4 @@
-import { FOODS } from "./Constants";
+import { FOODS } from "../mock-data/Constants";
 
 export default function SpinAnimation({ isSpinning }) {
   return (

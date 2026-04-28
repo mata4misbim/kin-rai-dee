@@ -1,6 +1,6 @@
 import { useState } from "react";
 import FoodImage from "./Foodimage";
-import { DIFFICULTY_COLOR } from "./Constants";
+import { DIFFICULTY_COLOR } from "../mock-data/Constants";
 
 export default function FoodCard({ food, onClick }) {
   const [hovered, setHovered] = useState(false);

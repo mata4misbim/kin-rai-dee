@@ -1,12 +1,13 @@
 ﻿import { useEffect, useMemo, useRef, useState } from "react";
-import { CATEGORIES, FOODS } from "./Constants";
-import FoodCard from "./Foodcard";
-import FoodModal from "./Foodmodal";
-import SpinAnimation from "./Spinanimation";
+import { CATEGORIES, FOODS } from "./mock-data/Constants";
+import FoodCard from "./components/Foodcard";
+import FoodModal from "./components/Foodmodal";
+import SpinAnimation from "./components/Spinanimation";
 import "./App.css";
 
 export default function App() {
   const [selectedFood, setSelectedFood] = useState(null);
+  const [activePage, setActivePage] = useState("home");
   const [activeCategory, setActiveCategory] = useState("ทั้งหมด");
   const [randomFood, setRandomFood] = useState(null);
   const [isSpinning, setIsSpinning] = useState(false);
@@ -113,90 +114,281 @@ export default function App() {
               style={{
                 display: "inline-flex",
                 alignItems: "center",
-                gap: 14,
-                padding: "18px 40px",
+                gap: 10,
+                padding: "14px 28px",
                 cursor: "pointer",
               }}
             >
-              <span style={{ fontSize: 30, filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.3))" }}>
-                🍛
+              <span
+                style={{
+                  fontSize: 18,
+                  color: isSpinning ? "#9A3412" : "#7C2D12",
+                }}
+              >
+                ⟳
               </span>
               <span
                 style={{
-                  color: "#fff",
-                  fontSize: 20,
-                  fontWeight: 700,
-                  textShadow: "0 1px 2px rgba(0,0,0,0.3)",
+                  color: isSpinning ? "#9A3412" : "#1C1410",
+                  fontSize: 15,
+                  fontWeight: 600,
                 }}
               >
-                {isSpinning ? "กำลังสุ่ม..." : "สุ่มเมนูเดี๋ยวนี้"}
+                {isSpinning ? "กำลังสุ่ม" : "สุ่มเมนู"}
               </span>
             </div>
           </div>
-        </header>
 
-        <section style={{ marginBottom: 24 }}>
-          <div
+          <nav
             style={{
+              marginTop: 20,
               display: "flex",
               flexWrap: "wrap",
               gap: 10,
-              alignItems: "center",
             }}
           >
-            {CATEGORIES.map((category) => (
+            {[
+              { key: "home", label: "หน้าโฮม" },
+              { key: "catalog", label: "แคตตาล็อค" },
+            ].map((tab) => (
               <button
-                key={category}
-                onClick={() => {
-                  setActiveCategory(category);
-                  setRandomFood(null);
-                }}
+                key={tab.key}
+                onClick={() => setActivePage(tab.key)}
+                className={`navLink ${activePage === tab.key ? "active" : ""}`}
                 style={{
-                  border: "1px solid",
-                  borderColor:
-                    activeCategory === category ? "#991B1B" : "#DEB887",
-                  background: activeCategory === category ? "#991B1B" : "#FFFBF0",
-                  color: activeCategory === category ? "#fff" : "#6B4F3A",
-                  padding: "10px 16px",
-                  borderRadius: 999,
                   cursor: "pointer",
+                  borderRadius: 999,
+                  border: "1px solid #E5E7EB",
+                  background: activePage === tab.key ? "#F8F1E7" : "#ffffff",
+                  color: activePage === tab.key ? "#7C2D12" : "#475569",
+                  padding: "10px 18px",
                   fontWeight: 600,
                   fontSize: 13,
                 }}
               >
-                {category}
+                {tab.label}
               </button>
             ))}
-          </div>
-        </section>
+          </nav>
+        </header>
 
+        {/* <SpinAnimation isSpinning={isSpinning} /> */}
+
+        {activePage === "home" && (
+          <section style={{ marginBottom: 24 }}>
+            <div
+              style={{
+                display: "grid",
+                gap: 20,
+                gridTemplateColumns: "1.2fr 0.8fr",
+                alignItems: "stretch",
+              }}
+            >
+              <div
+                style={{
+                  background: "#ffffff",
+                  border: "1px solid #E5E7EB",
+                  borderRadius: 18,
+                  padding: "24px",
+                  minHeight: 250,
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 16,
+                    fontWeight: 700,
+                    color: "#1C1410",
+                    marginBottom: 12,
+                  }}
+                >
+                  เริ่มต้นใช้งาน
+                </div>
+                <div style={{ display: "grid", gap: 12 }}>
+                  {[
+                    {
+                      title: "เลือกหมวดหมู่",
+                      description: "ค้นหาอาหารตามประเภทที่คุณอยากทาน",
+                    },
+                    {
+                      title: "กดปุ่มสุ่ม",
+                      description: "ให้ระบบช่วยเลือกเมนูให้แบบง่ายๆ",
+                    },
+                    {
+                      title: "ดูสูตรอาหาร",
+                      description: "คลิกการ์ดเพื่อดูวิธีทำเต็มรูปแบบ",
+                    },
+                  ].map((step) => (
+                    <div
+                      key={step.title}
+                      style={{
+                        borderRadius: 14,
+                        background: "#F8F1E7",
+                        border: "1px solid #F0E2CE",
+                        padding: "14px 16px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 700,
+                          color: "#4B4032",
+                          marginBottom: 4,
+                        }}
+                      >
+                        {step.title}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 13,
+                          color: "#6B4F3A",
+                          lineHeight: 1.5,
+                        }}
+                      >
+                        {step.description}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div
+                style={{
+                  background: "#ffffff",
+                  border: "1px solid #E5E7EB",
+                  borderRadius: 18,
+                  padding: "24px",
+                  minHeight: 250,
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 16,
+                    fontWeight: 700,
+                    color: "#1C1410",
+                    marginBottom: 12,
+                  }}
+                >
+                  เมนูแนะนำวันนี้
+                </div>
+                <div style={{ display: "grid", gap: 12 }}>
+                  {FOODS.slice(0, 3).map((food) => (
+                    <div
+                      key={food.id}
+                      onClick={() => setSelectedFood(food)}
+                      style={{
+                        display: "flex",
+                        gap: 12,
+                        alignItems: "center",
+                        cursor: "pointer",
+                        padding: "12px",
+                        borderRadius: 14,
+                        border: "1px solid #E5E7EB",
+                        transition: "background 0.2s ease",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = "#FFFBF0";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "transparent";
+                      }}
+                    >
+                      <img
+                        src={food.image}
+                        alt={food.name}
+                        style={{
+                          width: 64,
+                          height: 64,
+                          objectFit: "cover",
+                          borderRadius: 14,
+                        }}
+                      />
+                      <div>
+                        <div
+                          style={{
+                            fontSize: 14,
+                            fontWeight: 700,
+                            color: "#1C1410",
+                          }}
+                        >
+                          {food.name}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 12,
+                            color: "#6B4F3A",
+                            marginTop: 2,
+                          }}
+                        >
+                          {food.time} • {food.calories} kcal
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {activePage === "catalog" && (
+          <section style={{ marginBottom: 24 }}>
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 10,
+                alignItems: "center",
+              }}
+            >
+              {CATEGORIES.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => {
+                    setActiveCategory(category);
+                    setRandomFood(null);
+                  }}
+                  style={{
+                    border: "1px solid",
+                    borderColor:
+                      activeCategory === category ? "#991B1B" : "#DEB887",
+                    background:
+                      activeCategory === category ? "#991B1B" : "#FFFBF0",
+                    color: activeCategory === category ? "#fff" : "#6B4F3A",
+                    padding: "10px 16px",
+                    borderRadius: 999,
+                    cursor: "pointer",
+                    fontWeight: 600,
+                    fontSize: 13,
+                  }}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
         <SpinAnimation isSpinning={isSpinning} />
 
         {randomFood && (
           <div style={{ marginBottom: 32 }}>
             <div
               style={{
-                marginBottom: 16,
+                marginBottom: 14,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: 10,
               }}
             >
               <div
                 style={{
-                  fontSize: 18,
-                  fontWeight: 800,
-                  color: "#1C1410",
+                  fontSize: 15,
+                  fontWeight: 600,
+                  color: "#4B5563",
                   textAlign: "center",
-                  background:
-                    "linear-gradient(135deg, #D97706 0%, #991B1B 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
+                  letterSpacing: "0.3px",
                 }}
               >
-                🎉 ผลการสุ่มอาหารของคุณคือ 🎉
+                ผลการสุ่มอาหาร
               </div>
             </div>
             <div
@@ -209,74 +401,58 @@ export default function App() {
               <div
                 onClick={() => setSelectedFood(randomFood)}
                 style={{
-                  background: "#FFFBF0",
-                  border: "2px solid #B45309",
-                  borderRadius: 24,
+                  background: "#ffffff",
+                  border: "1px solid #E5E7EB",
+                  borderRadius: 18,
                   overflow: "hidden",
                   cursor: "pointer",
-                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                  transition: "transform 0.2s ease, box-shadow 0.2s ease",
                   transform: "translateY(0)",
-                  boxShadow: "0 20px 40px rgba(153,27,27,0.15)",
-                  maxWidth: 480,
+                  boxShadow: "0 10px 24px rgba(15, 23, 42, 0.06)",
+                  maxWidth: 460,
                   width: "100%",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform =
-                    "translateY(-8px) scale(1.02)";
-                  e.currentTarget.style.boxShadow = "0 32px 64px rgba(153,27,27,0.22)";
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 14px 28px rgba(15, 23, 42, 0.08)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0) scale(1)";
-                  e.currentTarget.style.boxShadow = "0 20px 40px rgba(153,27,27,0.15)";
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow =
+                    "0 10px 24px rgba(15, 23, 42, 0.06)";
                 }}
               >
-                <div style={{ position: "relative" }}>
+                <div>
                   <img
                     src={randomFood.image}
                     alt={randomFood.name}
                     style={{
                       width: "100%",
-                      height: 320,
+                      height: 280,
                       objectFit: "cover",
                       display: "block",
                     }}
                   />
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: 16,
-                      right: 16,
-                      background: "rgba(255, 248, 220, 0.95)",
-                      backdropFilter: "blur(10px)",
-                      borderRadius: 20,
-                      padding: "6px 12px",
-                      fontSize: 12,
-                      fontWeight: 700,
-                      color: "#991B1B",
-                      border: "1px solid rgba(153,27,27,0.25)",
-                    }}
-                  >
-                    ⭐ แนะนำ
-                  </div>
                 </div>
 
-                <div style={{ padding: "24px" }}>
+                <div style={{ padding: "20px 20px 18px" }}>
                   <div
                     style={{
                       display: "flex",
                       alignItems: "flex-start",
                       justifyContent: "space-between",
                       gap: 12,
-                      marginBottom: 16,
+                      marginBottom: 14,
                     }}
                   >
                     <div style={{ flex: 1 }}>
                       <div
                         style={{
-                          fontWeight: 800,
-                          fontSize: 24,
-                          color: "#1C1410",
-                          lineHeight: 1.2,
+                          fontWeight: 700,
+                          fontSize: 20,
+                          color: "#111827",
+                          lineHeight: 1.3,
                           marginBottom: 4,
                         }}
                       >
@@ -284,8 +460,8 @@ export default function App() {
                       </div>
                       <div
                         style={{
-                          fontSize: 14,
-                          color: "#9C7B5A",
+                          fontSize: 13,
+                          color: "#6B7280",
                           fontWeight: 500,
                         }}
                       >
@@ -294,14 +470,14 @@ export default function App() {
                     </div>
                     <span
                       style={{
-                        background: "linear-gradient(135deg, #FEF3C7, #FCD34D50)",
-                        color: "#92400E",
-                        fontSize: 12,
-                        fontWeight: 700,
-                        padding: "6px 14px",
-                        borderRadius: 20,
+                        background: "#F3F4F6",
+                        color: "#374151",
+                        fontSize: 11,
+                        fontWeight: 600,
+                        padding: "5px 10px",
+                        borderRadius: 999,
                         whiteSpace: "nowrap",
-                        border: "1px solid #FCD34D80",
+                        border: "1px solid #E5E7EB",
                       }}
                     >
                       {randomFood.difficulty}
@@ -313,23 +489,23 @@ export default function App() {
                       display: "flex",
                       gap: 8,
                       flexWrap: "wrap",
-                      marginBottom: 20,
+                      marginBottom: 14,
                     }}
                   >
-                    {randomFood.tags.slice(0, 4).map((tag) => (
+                    {randomFood.tags.slice(0, 3).map((tag) => (
                       <span
                         key={tag}
                         style={{
-                          fontSize: 12,
-                          background: "#FEF3C7",
-                          color: "#92400E",
-                          padding: "4px 12px",
-                          borderRadius: 16,
+                          fontSize: 11,
+                          background: "#F8FAFC",
+                          color: "#475569",
+                          padding: "4px 10px",
+                          borderRadius: 999,
+                          border: "1px solid #E5E7EB",
                           fontWeight: 500,
-                          border: "1px solid #FCD34D50",
                         }}
                       >
-                        #{tag}
+                        {tag}
                       </span>
                     ))}
                   </div>
@@ -338,64 +514,13 @@ export default function App() {
                     style={{
                       display: "flex",
                       justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: 16,
+                      fontSize: 13,
+                      color: "#52525B",
+                      fontWeight: 500,
                     }}
                   >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 4,
-                      }}
-                    >
-                      <span style={{ fontSize: 14 }}>⏱️</span>
-                      <span
-                        style={{
-                          fontSize: 14,
-                          color: "#1C1410",
-                          fontWeight: 600,
-                        }}
-                      >
-                        {randomFood.time}
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 4,
-                      }}
-                    >
-                      <span style={{ fontSize: 14 }}>🔥</span>
-                      <span
-                        style={{
-                          fontSize: 14,
-                          color: "#1C1410",
-                          fontWeight: 600,
-                        }}
-                      >
-                        {randomFood.calories} kcal
-                      </span>
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      textAlign: "center",
-                      padding: "12px 0",
-                      borderTop: "1px solid #E8D5B7",
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontSize: 13,
-                        color: "#9C7B5A",
-                        fontWeight: 500,
-                      }}
-                    >
-                      คลิกเพื่อดูรายละเอียดและสูตรอาหาร 🍽️
-                    </span>
+                    <span>{randomFood.time}</span>
+                    <span>{randomFood.calories} kcal</span>
                   </div>
                 </div>
               </div>
@@ -403,17 +528,36 @@ export default function App() {
           </div>
         )}
 
-        <div
-          style={{
-            display: "grid",
-            gap: 18,
-            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-          }}
-        >
-          {foods.map((food) => (
-            <FoodCard key={food.id} food={food} onClick={setSelectedFood} />
-          ))}
-        </div>
+        {activePage === "catalog" ? (
+          <div
+            style={{
+              display: "grid",
+              gap: 18,
+              gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+              marginBottom: 32,
+            }}
+          >
+            {foods.map((food) => (
+              <FoodCard key={food.id} food={food} onClick={setSelectedFood} />
+            ))}
+          </div>
+        ) : (
+          <div
+            style={{
+              marginBottom: 32,
+              padding: "24px 20px",
+              borderRadius: 18,
+              border: "1px solid #E5E7EB",
+              background: "#ffffff",
+              color: "#6B7280",
+              textAlign: "center",
+              fontSize: 15,
+              lineHeight: 1.6,
+            }}
+          >
+            กดปุ่มสุ่มเมนูหรือไปที่หน้าแคตตาล็อคเพื่อดูอาหารทั้งหมด
+          </div>
+        )}
 
         {selectedFood && (
           <FoodModal
@@ -422,6 +566,11 @@ export default function App() {
           />
         )}
       </div>
+
+      <footer className="appFooter">
+        <div>Kin Rai Dee</div>
+        <div>อาหารตามสุ่ม • หน้าโฮม • แคตตาล็อค</div>
+      </footer>
     </div>
   );
 }
